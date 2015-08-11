@@ -61,17 +61,22 @@ street.prototype.maps=function(){
 
                         context.save();
                         context.setTransform(1, 0, 0, 1, 0, 0);
-                        context.translate(-224 + colSource * 32 + pos.X, rowSource * 32 + pos.Y+32);
-                        context.rotate(180 * Math.PI / 180);
+
+
                         if(tileId>3221225470){
                             tileId-=3221225472;
+                            context.translate(colSource * 32 + pos.X+32, rowSource * 32 + pos.Y+32);
+                            context.rotate(180 * Math.PI / 180);
                         }
                         else if(tileId>2684354560){
                             tileId-=2684354560;
-                            console.log(tileId);
+                            context.translate(colSource * 32 + pos.X+32, rowSource * 32 + pos.Y);
+                            context.rotate(90 * Math.PI / 180);
                         }
                         else{
                             tileId-=1610612736;
+                            context.translate(colSource * 32 + pos.X, rowSource * 32 + pos.Y+32);
+                            context.rotate(270 * Math.PI / 180);
 
                         }
 
@@ -98,7 +103,7 @@ street.prototype.maps=function(){
                                 break;
                             }
                             if (-pos.Y - 32 < rowSource * 32) {//Só imprimir após a linha está no ponto de visão, não imprimindo nada antes deste ponto
-                                context.drawImage(maps, sourceX, sourceY, 32, 32, -256 + colSource * 32 + pos.X, rowSource * 32 + pos.Y, 32, 32);
+                                context.drawImage(maps, sourceX, sourceY, 32, 32,  colSource * 32 + pos.X, rowSource * 32 + pos.Y, 32, 32);
                             }
                         }
                     }
