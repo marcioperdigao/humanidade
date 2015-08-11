@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<!--<script src="http://gumball.wickedlysmart.com/?callback=updateSales"></script>-->
+		<meta charset="utf8">
+		<title>Jogo da politica</title>
+		<script src="dinamica/dinamica.js" type="text/javascript"></script>
+		
+		<link rel="stylesheet" type="text/css" href="estilo/estilo.css">
+	</head>
+	<body >
+		<header>
+			<nav id="menu-principal">
+			</nav>
+		</header>	
+		<main id="main-conteudo">
+			<section id="section-game">
+				<canvas id="game" width="800" height="400">
+				</canvas>
+				<form id="formulario">
+					<p>
+						<label for="backgroundcolor">Select Background Color</label>
+						<select id="backgroundcolor">
+							<option value="white" selected="selected">White</option>
+							<option value="black">Black</option>
+						</select>
+					</p>
+					<p>
+						<label for="shapes">Circles os Squares</label>
+						<select id="shapes">
+							<option value="circles" selected="selected">Circles</option>
+							<option value="squares">Squares</option>
+						</select>
+					</p>
+					<p>
+						<label for="foregroundcolor">Select text color:</label>
+						<select id="foregroundcolor" name="foregroundcolor">
+							<option value="black" selected="selected">Black</option>
+							<option value="white">White</option>
+						</select>
+					</p>
+					<p>
+						<label for="tweets">tweets</label>
+						<select id="tweets">
+						</select>
+					</p>
+					<p>
+						<input type="button" id="previewButton" value="Preview" onclick="criando();">
+						<input type="button" id="previewButton" value="Preview" onclick="smileFace();">
+						
+					</p>
+				</form>
+				<!--<script src="https://twitter.com/msperdigao.json?callback=updateTweets">-->
+</script>
+			</section>
+			<section id="location">
+				<p id="local"></p>
+			</section>
+			<section id="server">
+				
+			</section>
+		
+			
+		</main>
+		<footer>
+		</footer>
+		
+	</body>

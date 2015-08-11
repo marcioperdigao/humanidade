@@ -1,0 +1,14 @@
+
+#game{
+	
+	margin: 0;
+	border: 2px solid #000;
+}
+#section-game{
+	
+	width: 800px;
+	height:700px;
+	position: absolute;
+	top:10%;
+	left: 20%;
+}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>QUnit Example</title>
+  
+  
+</head>
+<body>
+  <script>
+    alert("helloo");
+  function getVehicle() {
+    
+  
+  var vehicle=new Object();
+  vehicle.cor="green";
+  vehicle.getInfo=function () {
+    return('vehicle: '+vehicle.cor);
+  };
+  return vehicle;
+  }
+  
+  window.onload=function () {
+    var car1=new getVehicle();
+    alert(car1.getInfo());
+  }
+  </script>
+</body>
+</html>
