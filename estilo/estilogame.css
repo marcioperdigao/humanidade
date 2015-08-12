@@ -12,6 +12,12 @@ canvas#game{
 	left:11%;
 	border: 1px solid black;
 }
+canvas#workShop{
+	position: absolute;
+	top:42px;
+	left:11.2%;
+	border: 1px solid black;
+}
 nav{
 	width: 1000px;
 }

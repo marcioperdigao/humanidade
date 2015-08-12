@@ -37,7 +37,7 @@ character.prototype.walk=function(){
 
 
     window.addEventListener("keydown",function(e){
-        var walking=15;
+        var walking=32;
         var codeKeyboard=(e.keyCode);
         //pra esquerda
         if(codeKeyboard==37){
@@ -133,7 +133,7 @@ character.prototype.drawCharacter=function(pessoa){
             this.units.moves--;
         }
         context.beginPath();
-        context.font="15px";
+        context.font="10px Sans-Serif";
         context.fillStyle="black";
         context.linewidth=2;
         context.fillText(name,this.infoChar.x+this.pos.X+10,this.infoChar.y+this.pos.Y);

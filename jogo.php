@@ -3,7 +3,7 @@
 	<head><meta charset="utf8">
 		<title>Prototipo do game mais foda do mundo</title>
 		<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">-->
-		<script src="dinamica/box2dweb/Box2dWeb-2.1.a.3.js" type="text/javascript"></script>
+		<script src="dinamica/createmode.js" type="text/javascript"></script>
 		<script src="dinamica/tiled.js" type="text/javascript"></script>
 		<script src="dinamica/houses.js" type="text/javascript"></script>
 		<script src="dinamica/environment.js" type="text/javascript"></script>
@@ -69,6 +69,7 @@
 			<section id="areadogame">
 
 				<canvas id='game' width='1000' height='600'></canvas>
+				<canvas id='workShop' width='228' height='400'></canvas>
 				<?php
 					$id_cliente=@$_SESSION['id'];
 

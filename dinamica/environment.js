@@ -22,7 +22,7 @@ var street=function(config) {
         this.matrix[0].layer[k].push(this.img.layers[0].data[i]);
 
     }
-    k=-1;
+
     //second layer
     for (i = 0,k=-1; i < this.img.layers[1].data.length; i++) {
         if (i % 150 === 0) {
@@ -32,7 +32,6 @@ var street=function(config) {
         this.matrix[1].layer[k].push(this.img.layers[1].data[i]);
 
     }
-
 
 
 };

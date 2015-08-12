@@ -57,6 +57,8 @@ window.onload=function startGame(){
         pessoa[0].walk(pessoa[0]);
         pessoa[0].changeView(pos);
 
+    var workHouse=new createHouse(context);
+
 
     setInterval(draw,1000/60);
 
@@ -74,6 +76,7 @@ window.onload=function startGame(){
 
             map();
             caracter();
+            workHouse.openWork();
         }
 
         function caracter() {
@@ -89,10 +92,6 @@ window.onload=function startGame(){
         }
 
         function lotes() {
-
-
-            //casas[0].drawCasa();
-
 
             var flagBrasil=new flagstone(180,129,30,30,canvas,context);
             flagBrasil.drawingFlagBrasil();
