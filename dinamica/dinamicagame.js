@@ -57,7 +57,7 @@ window.onload=function startGame(){
         pessoa[0].walk(pessoa[0]);
         pessoa[0].changeView(pos);
 
-    var workHouse=new createHouse(context);
+    var workHouse=new creation(canvas,pessoa[0]);
 
 
     setInterval(draw,1000/60);
@@ -76,7 +76,7 @@ window.onload=function startGame(){
 
             map();
             caracter();
-            workHouse.openWork();
+            workHouse.startWorkShop();
         }
 
         function caracter() {

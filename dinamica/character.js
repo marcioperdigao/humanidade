@@ -41,9 +41,9 @@ character.prototype.walk=function(){
         var codeKeyboard=(e.keyCode);
         //pra esquerda
         if(codeKeyboard==37){
-                if((pos.X<0)){
+            if((pos.X<0)){
                 pos.X+=walking;
-                }
+            }
         }
 
         //pra direita
@@ -86,6 +86,9 @@ character.prototype.changeView=function(){
     function onMouseMove(e){
         mouse.x= e.clientX-canvas.offsetLeft;
         mouse.y= e.clientY-canvas.offsetTop;
+        if(mouse.x<30){
+
+        }
     }
 
     function onMouseClick(e){
@@ -109,9 +112,9 @@ character.prototype.changeView=function(){
             //units.y=units.x*-1;
         }
 
-       /* console.log(" angle "+angle+" tgValue :"+tgValue+" distanciaX :"+distanciaX+" distanciaY :"+distanciaY+" distanciaDiagonal"+distanciaDiagonal+
-            " X "+charReal.x+" Y "+charReal.y+" arctan: "+angle);
-        console.log("xunits: "+units.x+" yunits "+units.y+"moves "+units.moves+" pos.x "+pos.Y);*/
+        /* console.log(" angle "+angle+" tgValue :"+tgValue+" distanciaX :"+distanciaX+" distanciaY :"+distanciaY+" distanciaDiagonal"+distanciaDiagonal+
+         " X "+charReal.x+" Y "+charReal.y+" arctan: "+angle);
+         console.log("xunits: "+units.x+" yunits "+units.y+"moves "+units.moves+" pos.x "+pos.Y);*/
 
     }
     canvas.addEventListener("mousemove",onMouseMove,false);
@@ -127,28 +130,28 @@ character.prototype.drawCharacter=function(pessoa){
 
     var name=this.name;
     var context=this.context;
-        if(this.units.moves>0){
+    if(this.units.moves>0){
         this.infoChar.x+=this.units.x;
         this.infoChar.y+=this.units.y;
-            this.units.moves--;
-        }
-        context.beginPath();
-        context.font="10px Sans-Serif";
-        context.fillStyle="black";
-        context.linewidth=2;
-        context.fillText(name,this.infoChar.x+this.pos.X+10,this.infoChar.y+this.pos.Y);
-        context.closePath();
+        this.units.moves--;
+    }
+    context.beginPath();
+    context.font="10px Sans-Serif";
+    context.fillStyle="black";
+    context.linewidth=2;
+    context.fillText(name,this.infoChar.x+this.pos.X+10,this.infoChar.y+this.pos.Y);
+    context.closePath();
 
-        var sourceX=Math.floor(this.hulkFrame[this.frameIndex]%4)*40;
-        var sourceY=Math.floor(this.hulkFrame[this.frameIndex]/4)*56;
+    var sourceX=Math.floor(this.hulkFrame[this.frameIndex]%4)*40;
+    var sourceY=Math.floor(this.hulkFrame[this.frameIndex]/4)*56;
 
-        context.drawImage(this.hulk,sourceX,0,40,56,this.infoChar.x+this.pos.X,this.infoChar.y+this.pos.Y,40,56);
+    context.drawImage(this.hulk,sourceX,0,40,56,this.infoChar.x+this.pos.X,this.infoChar.y+this.pos.Y,40,56);
     if(this.timePerFrame==10){
         this.timePerFrame=0;
         this.frameIndex++;
-            if(this.frameIndex==this.hulkFrame.length){
-                this.frameIndex=0;
-            }
+        if(this.frameIndex==this.hulkFrame.length){
+            this.frameIndex=0;
+        }
     }
     this.timePerFrame++;
 
