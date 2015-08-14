@@ -50,7 +50,7 @@ window.onload=function startGame(){
             charContext:context,
             charCanvas:canvas,
             pos:pos,
-            speed:5
+            speed:3
 
         });
 
@@ -76,17 +76,17 @@ window.onload=function startGame(){
 
             map();
             caracter();
-            workHouse.startWorkShop();
+            //workHouse.startWorkShop();
         }
 
         function caracter() {
 
-            pessoa[0].drawCharacter();
+            //pessoa[0].drawCharacter();
         }
 
         function map() {
 
-                streetMain.maps();
+                streetMain.maps(pessoa[0]);
 
             lotes();
         }

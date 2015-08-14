@@ -32,11 +32,9 @@ var street=function(config) {
         this.matrix[1].layer[k].push(this.img.layers[1].data[i]);
 
     }
-
-
 };
 
-street.prototype.maps=function(){
+street.prototype.maps=function(pessoa){
     var context=this.context;
     var pos=this.posMap;
     var matrix=this.matrix;
@@ -49,6 +47,7 @@ street.prototype.maps=function(){
         var sourceX;
         var sourceY;
         for (var layerNumber = 0; layerNumber < 2; layerNumber++) {
+            if(layerNumber>0) pessoa.drawCharacter();
             for (var rowSource = 0; rowSource < 150; rowSource++) {
                 for (var colSource = 0; colSource < 150; colSource++) {
 
@@ -78,7 +77,6 @@ street.prototype.maps=function(){
                             context.rotate(270 * Math.PI / 180);
 
                         }
-
 
                         sourceX = Math.floor((tileId) % 8) * 32;
                         sourceY = Math.floor((tileId) / 8) * 32;

@@ -33,72 +33,57 @@ var creation=function(canvasMain,pessoa){
     this.imgTilesMaps=new Image();
     this.imgTilesMaps.src=this.TilesMaps.tilesets[0].image;
 
-
-    var startWorkShop=this.startWorkShop();
-
+    var _this=this;
     function onMouseMoveWork(e){
 
         createHouseMouse.x=e.clientX-creationCanvas.offsetLeft;
         createHouseMouse.y=e.clientY-creationCanvas.offsetTop;
 
     }
-    function onMouseClickWork(e){
+    this.onMouseClickWork=function(e){
         var metricsWorkHouse=0;
 
         if(workHouse.newState==WORK_SHOP_STATE_TITLE){
             metricsWorkHouse=creationContext.measureText(workHouse.textGroundOption);
-            console.log(workHouse.textGroundOption);
+            console.log(workHouse.title);
             metricsWorkHouse=metricsWorkHouse.width;
 
             if(createHouseMouse.x<(creationCanvas.width/2)+metricsWorkHouse/2 && createHouseMouse.x>(creationCanvas.width/2)-metricsWorkHouse/2){
                 if(createHouseMouse.y<60 && createHouseMouse.y>30){
                     workHouse.newState=WORK_SHOP_STATE_GROUND;
-                    startWorkShop();
+                    _this.startWorkShop();
                 }
             }
         }
         else if(workHouse.newState==WORK_SHOP_STATE_GROUND){
             metricsWorkHouse=creationContext.measureText(workHouse.title);
-            console.log(workHouse.title);
+            console.log(_this.startWorkShop);
             metricsWorkHouse=metricsWorkHouse.width;
             if(createHouseMouse.x>workHouse.positionX+(workHouse.tamX/2)-metricsWorkHouse/2 && createHouseMouse.x<workHouse.positionX+(workHouse.tamX/2)+metricsWorkHouse/2){
                 if(createHouseMouse.y<30 && createHouseMouse.y>0){
                     workHouse.newState=WORK_SHOP_STATE_TITLE;
-                    startWorkShop();
+                    _this.startWorkShop();
                 }
             }
-            /*if(createHouseMouse.x>workHouse.positionX+(workHouse.tamX/2)-metricsWorkHouse/2 && createHouseMouse.x<workHouse.positionX+(workHouse.tamX/2)+metricsWorkHouse/2){
-                if(createHouseMouse.y<workHouse.positionY+workHouse.tamY && createHouseMouse.y>workHouse.positionY){
-                    workHouse.newState=WORK_SHOP_STATE_TITLE;
-                }
-            }*/
         }
-        /*if(createHouseMouse.y<4){
-            var col=Math.floor(createHouseMouse.x/32);
-            var row=Math.floor(createHouseMouse.y/32);
-            tileId=(row*7)+(col+row);
-
-        }*/
-    }
+    };
     this.canvas.addEventListener("mousemove",onMouseMoveWork,true);
-    this.canvas.addEventListener("click",onMouseClickWork,false);
-
+    this.canvas.addEventListener("click",this.onMouseClickWork,false);
+    this.startWorkShop();
 };
 
-creation.prototype.startWorkShop=function(){
+creation.prototype.startWorkShop=function(working){
 
 
-
+    console.log("dsadsa");
         switch (this.workHouse.newState){
             case(WORK_SHOP_STATE_TITLE):
                 this.stateTitle();
                 break;
             case(WORK_SHOP_STATE_GROUND):
-                console.log(this.workHouse.newState);
                 this.stateGround();
                 break;
         }
-
 };
 
 creation.prototype.stateTitle=function(){
@@ -176,6 +161,5 @@ creation.prototype.stateGround=function(){
 
         }
     }
-
 
 };

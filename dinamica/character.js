@@ -12,7 +12,8 @@ var character=function(config){
     this.units={
         x:0,
         y:0,
-        moves:0
+        moves:0,
+        frameY:0
     };
     this.moves=0;
     this.mouse={
@@ -37,7 +38,7 @@ character.prototype.walk=function(){
 
 
     window.addEventListener("keydown",function(e){
-        var walking=32;
+        var walking=16;
         var codeKeyboard=(e.keyCode);
         //pra esquerda
         if(codeKeyboard==37){
@@ -70,8 +71,6 @@ character.prototype.walk=function(){
         }
         //alert(heightCanvas/6+" "+pessoa.y);
     },true);
-
-
 
 };
 
@@ -112,6 +111,25 @@ character.prototype.changeView=function(){
             //units.y=units.x*-1;
         }
 
+        if(units.y<0){
+            if(units.x>0) {
+                if(units.x>units.y*-1) units.frameY=8;
+                else units.frameY=12;
+            }
+            else if(units.y<units.x) units.frameY=12;
+            else units.frameY=4;
+        }
+        else {
+            if(units.x>0){
+                if(units.x>units.y) units.frameY=8;
+                else units.frameY=0;
+            }
+            else{
+                if(units.x<units.y*-1) units.frameY=4;
+                else units.frameY=0;
+            }
+        }
+
         /* console.log(" angle "+angle+" tgValue :"+tgValue+" distanciaX :"+distanciaX+" distanciaY :"+distanciaY+" distanciaDiagonal"+distanciaDiagonal+
          " X "+charReal.x+" Y "+charReal.y+" arctan: "+angle);
          console.log("xunits: "+units.x+" yunits "+units.y+"moves "+units.moves+" pos.x "+pos.Y);*/
@@ -143,17 +161,18 @@ character.prototype.drawCharacter=function(pessoa){
     context.closePath();
 
     var sourceX=Math.floor(this.hulkFrame[this.frameIndex]%4)*40;
-    var sourceY=Math.floor(this.hulkFrame[this.frameIndex]/4)*56;
+    var sourceY=Math.floor(this.hulkFrame[this.units.frameY]/4)*56;
 
-    context.drawImage(this.hulk,sourceX,0,40,56,this.infoChar.x+this.pos.X,this.infoChar.y+this.pos.Y,40,56);
-    if(this.timePerFrame==10){
-        this.timePerFrame=0;
-        this.frameIndex++;
-        if(this.frameIndex==this.hulkFrame.length){
-            this.frameIndex=0;
+    context.drawImage(this.hulk,sourceX,sourceY,40,56,this.infoChar.x+this.pos.X,this.infoChar.y+this.pos.Y,40,56);
+    if(this.units.moves>=0){
+        if(this.timePerFrame==5){
+            this.timePerFrame=0;
+            this.frameIndex++;
+            if(this.frameIndex==this.hulkFrame.length){
+                this.frameIndex=0;
+            }
         }
+        this.timePerFrame++;
     }
-    this.timePerFrame++;
-
 };
 
