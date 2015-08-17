@@ -3,7 +3,7 @@
 	<head><meta charset="utf8">
 		<title>Prototipo do game mais foda do mundo</title>
 		<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">-->
-
+		<script src="dinamica/mobs.js" type="text/javascript"></script>
 		<script src="dinamica/createmode.js" type="text/javascript"></script>
 		<script src="dinamica/tiled.js" type="text/javascript"></script>
 		<script src="dinamica/houses.js" type="text/javascript"></script>

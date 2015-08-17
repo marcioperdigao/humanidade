@@ -17,6 +17,9 @@ window.onload=function startGame(){
     pos.Y=0;
 
 
+    var mobs=new aiMobs({
+        pos:pos
+    });
 
     //instancia map
     var streetMain=new street({
@@ -50,7 +53,7 @@ window.onload=function startGame(){
             charContext:context,
             charCanvas:canvas,
             pos:pos,
-            speed:3
+            speed:2
 
         });
 
@@ -61,8 +64,10 @@ window.onload=function startGame(){
 
 
     setInterval(draw,1000/60);
+    //setInterval(draw,1000);
 
     function draw() {
+
         //console.log(pos.X+" "+pos.Y);
         //context.fillStyle="#ffffff";
         //context.fillRect(0,0,widthCanvas,heightCanvas)
@@ -71,17 +76,18 @@ window.onload=function startGame(){
         drawBody();
 
         function drawBody() {
-    //1000 500
-
 
             map();
             caracter();
-            //workHouse.startWorkShop();
+            mobsFunctions();
+
+
         }
 
         function caracter() {
 
             //pessoa[0].drawCharacter();
+
         }
 
         function map() {
@@ -95,6 +101,11 @@ window.onload=function startGame(){
 
             var flagBrasil=new flagstone(180,129,30,30,canvas,context);
             flagBrasil.drawingFlagBrasil();
+
+        }
+        function mobsFunctions(){
+            mobs.moving();
+            mobs.drawMob();
 
         }
 

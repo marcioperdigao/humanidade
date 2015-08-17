@@ -75,7 +75,7 @@ var creation=function(canvasMain,pessoa){
 creation.prototype.startWorkShop=function(working){
 
 
-    console.log("dsadsa");
+
         switch (this.workHouse.newState){
             case(WORK_SHOP_STATE_TITLE):
                 this.stateTitle();

@@ -7,11 +7,15 @@ var street=function(config) {
     this.canvas=config.canvas;
     this.posMap=config.pos;
     this.img=TileMaps["modelo1"];
-    this.tilesMap=new Image();
-    this.tilesMap.src=this.img.tilesets[0].image;
-    this.matrix=[{},{}];
+    this.tilesMap=[];
+    this.tilesMap[0]=new Image();
+    this.tilesMap[0].src=this.img.tilesets[0].image;
+    this.tilesMap[1]=new Image();
+    this.tilesMap[1].src=this.img.tilesets[1].image;
+    this.matrix=[{},{},{}];
     this.matrix[0].layer=[];
     this.matrix[1].layer=[];
+    this.matrix[2].layer=[];
 
     //first layer
     for (var i = 0,k=-1; i < this.img.layers[0].data.length; i++) {
@@ -32,13 +36,23 @@ var street=function(config) {
         this.matrix[1].layer[k].push(this.img.layers[1].data[i]);
 
     }
+    //third layer
+    for (i = 0,k=-1; i < this.img.layers[2].data.length; i++) {
+        if (i % 150 === 0) {
+            k++;
+            this.matrix[2].layer[k] = [];
+        }
+        this.matrix[2].layer[k].push(this.img.layers[2].data[i]);
+
+    }
 };
 
 street.prototype.maps=function(pessoa){
     var context=this.context;
     var pos=this.posMap;
     var matrix=this.matrix;
-    var maps=this.tilesMap;
+    var tilesMap=this.tilesMap;
+    var imageSpriteNumber;
 
     drawMap();
 
@@ -46,34 +60,51 @@ street.prototype.maps=function(pessoa){
 
         var sourceX;
         var sourceY;
-        for (var layerNumber = 0; layerNumber < 2; layerNumber++) {
+        for (var layerNumber = 0; layerNumber < 3; layerNumber++) {
             if(layerNumber>0) pessoa.drawCharacter();
             for (var rowSource = 0; rowSource < 150; rowSource++) {
                 for (var colSource = 0; colSource < 150; colSource++) {
 
                     var tileId = matrix[layerNumber].layer[rowSource][colSource] - 1;
-                    //console.log(tileId);
 
-                    if (tileId > 350) {//tiled que precisam ser rotacionados;
+                    if (tileId > 360 && tileId < 3000) {
+                        imageSpriteNumber = 1;
+                        tileId -= 360;
+                        if (tileId >= 0) {
+
+                            sourceX = Math.floor((tileId) % 20) * 32;
+                            sourceY = Math.floor((tileId) / 20) * 32;
+                            if (rowSource * 32 > heightCanvas - pos.Y) { //faz com que só imprima o mapa até a visão do usuario, economizando laços for
+                                break;
+                            }
+                            if (-pos.Y - 32 < rowSource * 32) {//Só imprimir após a linha está no ponto de visão, não imprimindo nada antes deste ponto
+                                context.drawImage(tilesMap[imageSpriteNumber], sourceX, sourceY, 32, 32, colSource * 32 + pos.X, rowSource * 32 + pos.Y, 32, 32);
+                            }
+                        }
+
+                    }
+                    else{
+                        imageSpriteNumber = 0;
+                    if (tileId > 1610612736) {//tiled que precisam ser rotacionados;
 
 
                         context.save();
                         context.setTransform(1, 0, 0, 1, 0, 0);
 
 
-                        if(tileId>3221225470){
-                            tileId-=3221225472;
-                            context.translate(colSource * 32 + pos.X+32, rowSource * 32 + pos.Y+32);
+                        if (tileId > 3221225470) {
+                            tileId -= 3221225472;
+                            context.translate(colSource * 32 + pos.X + 32, rowSource * 32 + pos.Y + 32);
                             context.rotate(180 * Math.PI / 180);
                         }
-                        else if(tileId>2684354560){
-                            tileId-=2684354560;
-                            context.translate(colSource * 32 + pos.X+32, rowSource * 32 + pos.Y);
+                        else if (tileId > 2684354560) {
+                            tileId -= 2684354560;
+                            context.translate(colSource * 32 + pos.X + 32, rowSource * 32 + pos.Y);
                             context.rotate(90 * Math.PI / 180);
                         }
-                        else{
-                            tileId-=1610612736;
-                            context.translate(colSource * 32 + pos.X, rowSource * 32 + pos.Y+32);
+                        else {
+                            tileId -= 1610612736;
+                            context.translate(colSource * 32 + pos.X, rowSource * 32 + pos.Y + 32);
                             context.rotate(270 * Math.PI / 180);
 
                         }
@@ -86,7 +117,7 @@ street.prototype.maps=function(pessoa){
                         }
 
                         if (-pos.Y - 32 < rowSource * 32) {//Só imprimir após a linha está no ponto de visão, não imprimindo nada antes deste ponto
-                            context.drawImage(maps, sourceX, sourceY, 32, 32,0,0, 32, 32);
+                            context.drawImage(tilesMap[imageSpriteNumber], sourceX, sourceY, 32, 32, 0, 0, 32, 32);
                         }
                         context.restore();
 
@@ -100,10 +131,11 @@ street.prototype.maps=function(pessoa){
                                 break;
                             }
                             if (-pos.Y - 32 < rowSource * 32) {//Só imprimir após a linha está no ponto de visão, não imprimindo nada antes deste ponto
-                                context.drawImage(maps, sourceX, sourceY, 32, 32,  colSource * 32 + pos.X, rowSource * 32 + pos.Y, 32, 32);
+                                context.drawImage(tilesMap[imageSpriteNumber], sourceX, sourceY, 32, 32, colSource * 32 + pos.X, rowSource * 32 + pos.Y, 32, 32);
                             }
                         }
                     }
+                }
                 }
             }
         }
