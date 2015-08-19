@@ -1,14 +1,14 @@
 
 var aiMobs=function(config) {
-    this.configMob={};
-    this.pos=config.pos; //POSITION OF THE VIEW GAME, USED TO KNOW WHERE PRINT, WHERE THE CAMERA USER IS
-    this.mobPosition={};
-    this.mobPosition.x=600;
-    this.mobPosition.y=100;
 
+    this.config={};
+    this.pos=config.pos; //POSITION OF THE VIEW GAME, USED TO KNOW WHERE PRINT, WHERE THE CAMERA USER IS
+    this.mobNumber=config.mobNumber;
+    /* this.target=config.target; //info of all players position*/
+    this.nextHit=100;
     var _this=this;
     var xmlhttp = new XMLHttpRequest();
-    var url = "img/mobs/goblin/goblin.json";
+    var url = "img/mobs/goblin/goblinsont.json";
 
     xmlhttp.onreadystatechange = function () {
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
@@ -21,30 +21,38 @@ var aiMobs=function(config) {
 
     this.myFunction=function(response) {
 
-        this.configMob = JSON.parse(response);
-        console.log(this.configMob);
-        console.log(this.configMob.animations.atk_right.row);
-    };
+        this.config = JSON.parse(response);
+        this.config.life+=30*this.config.level;
+        this.config.x+=Math.random()*config.mobNumber.number*100;
+        this.config.y+=Math.random()*config.mobNumber.number*100;
 
+
+
+    };
+    console.log(config.life);
+
+    this.drawingMobs=new drawTheMob(this); //create the estancia to draw the mob
+    this.followHim=new followTarget(this); //create the estancia to follow the target
 
     this.units={
         x:0,
         y:0,
         moves:0,
-        frameY:0,
-        placeFree:true
+        follow:false,
+        side:0,
+        imageFrame:0,
+        left:false,
+        stop:false,
+        distanciaX:null,
+        distanciaY:null,
+        distanciaDiagonal:null//distância do mob para o character se for menor que um certo valor entao o mob ataca
     };
-    this.moves=0;
+
 
     this.canvas=document.getElementById("game");
     this.context=this.canvas.getContext("2d");
     this.timePerFrame=0;
-    this.frameIndex=0;
-    this.mobImg=new Image();
-    this.mobImg.src="img/mobs/goblin/goblin.png";
-    this.mobImg.addEventListener('load',function(){
-        imagemCarregada=true;
-    },false);
+    this.img=config.img.img;
 
     this.matrix=[{},{},{},{}];
     this.matrix[0].layer=[];
@@ -73,75 +81,82 @@ var aiMobs=function(config) {
 };
 
 aiMobs.prototype.moving=function(){
-    if(this.mobPosition.y<420){//first check point
-        this.mobPosition.y+=this.configMob.moveSpeed;
+    if(this.units.follow==false){
+        if(this.config.y<420){//first check point
+            this.config.y+=this.config.moveSpeed;
+            this.units.side=7;
+
+        }
+        else if(this.config.y>=420 && this.config.x<=2500){//second check point
+            this.config.x+=this.config.moveSpeed;
+            this.units.side=1;
+            this.units.left=false;
+
+        }
+        else if(this.config.y<=1300 && this.config.x<=3520){//third check point... know he will walk in diagonal
+            this.config.x+=this.config.moveSpeed*(54/100);
+            this.config.y+=this.config.moveSpeed*(46/100);
+            this.units.side=1;
+            this.units.left=false;
+
+        }
+        else if(this.config.y<=2048 && this.config.x<=4094){//fourth check point... know he will walk in diagonal
+            this.config.x+=this.config.moveSpeed*(35/100);
+            this.config.y+=this.config.moveSpeed*(65/100);
+            this.units.side=7;
+
+        }
+        else if(this.config.y<=4260 && this.config.x<=4064){//fifth check point... know he will walk in diagonal
+            this.config.x+=this.config.moveSpeed*(4/100);
+            this.config.y+=this.config.moveSpeed*(96/100);
+            this.units.side=7;
+
+        }
     }
-    else if(this.mobPosition.y>=420 && this.mobPosition.x<=2500){//second check point
-        this.mobPosition.x+=this.configMob.moveSpeed;
+    else if(this.units.stop==false) {
+        //console.log(this.units.distanciaX+" distanciaY "+this.units.distanciaY+ " diagonalDistancia "+this.units.diagonalDistancia);
+
+        if(this.config.x<this.target[0].config.x){
+            this.config.x+=this.config.moveSpeed;
+
+        }
+        else if(this.config.x>this.target[0].config.x){
+            this.config.x-=this.config.moveSpeed;
+
+        }
+
+        if(this.config.y>this.target[0].config.y){
+            this.config.y-=this.config.moveSpeed;
+
+        }
+        else if(this.config.y<this.target[0].config.y){
+            this.config.y+=this.config.moveSpeed;
+
+        }
+
     }
-    else if(this.mobPosition.y<=1300 && this.mobPosition.x<=3520){//third check point... know he will walk in diagonal
-        this.mobPosition.x+=this.configMob.moveSpeed*(54/100);
-        this.mobPosition.y+=this.configMob.moveSpeed*(46/100);
-    }
-    else if(this.mobPosition.y<=2048 && this.mobPosition.x<=4094){//fourth check point... know he will walk in diagonal
-        this.mobPosition.x+=this.configMob.moveSpeed*(35/100);
-        this.mobPosition.y+=this.configMob.moveSpeed*(65/100);
-    }
-    else if(this.mobPosition.y<=4260 && this.mobPosition.x<=4064){//fifth check point... know he will walk in diagonal
-        this.mobPosition.x+=this.configMob.moveSpeed*(4/100);
-        this.mobPosition.y+=this.configMob.moveSpeed*(96/100);
+
+};
+aiMobs.prototype.attacking=function(target){
+    this.target=target;
+    //follow the player
+    this.followHim.startFollow(this.target[0]);
+
+    //attack
+
+    if(this.units.stop==true){
+        if(this.nextHit==100){
+            atkTarget(this.target,this); //create the stanza to atk the target
+            this.nextHit=0;
+        }
+        this.nextHit+=this.config.atkSpeed;
     }
 
 
 };
 
-
 aiMobs.prototype.drawMob=function(){
 
-    /*if(this.units.moves>0){ //USED TO CALCULATION how much more movies need to the character arrive, if its not there yet the go more one step
-        this.infoChar.x+=this.units.x;
-        this.infoChar.y+=this.units.y;
-        this.units.moves--;
-    }
-    //Now i'm calculation the real position of the char and using this to get the tiled Id
-    var tileX=(Math.floor((this.infoChar.x+20)/32));
-    var tileY=(Math.floor((this.infoChar.y+50)/32));
+    this.drawingMobs.drawing();
 
-    if(!this.matrix[3].layer[tileY][tileX]==false){
-        this.infoChar.x-=this.units.x;
-        this.infoChar.y-=this.units.y;
-        this.units.moves=0;
-    }
-*/
-    this.context.beginPath();
-    this.context.font="15px Sans-Serif";
-    this.context.fillStyle="black";
-    this.context.linewidth=4;
-    this.context.fillText(this.configMob.id,this.mobPosition.x+this.pos.X,this.mobPosition.y+this.pos.Y);
-    this.context.closePath();
-
-    var sourceX=Math.floor(this.units.moves%this.configMob.animations.atk_right.length)*52;
-    var sourceY=Math.floor(2/9)*52;
-
-    this.context.drawImage(this.mobImg,sourceX,this.configMob.animations.atk_right.row,52,52,this.mobPosition.x+this.pos.X,+this.mobPosition.y+this.pos.Y,this.configMob.width,this.configMob.height);
-    this.timePerFrame++;
-    if(this.timePerFrame==15){
-        this.timePerFrame=0;
-        this.units.moves++;
-        if(this.units.moves==this.configMob.animations.atk_right.lenght){
-            this.units.moves=0;
-        }
-    }
-
-    /*if(this.units.moves>0){
-        if(this.timePerFrame==10){
-            this.timePerFrame=0;
-            this.frameIndex++;
-            if(this.frameIndex==this.hulkFrame.length){
-                this.frameIndex=0;
-            }
-        }
-        this.timePerFrame++;
-    }
-*/
 };

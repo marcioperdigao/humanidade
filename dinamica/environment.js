@@ -61,7 +61,7 @@ street.prototype.maps=function(pessoa){
         var sourceX;
         var sourceY;
         for (var layerNumber = 0; layerNumber < 3; layerNumber++) {
-            if(layerNumber>0) pessoa.drawCharacter();
+            //if(layerNumber>0) pessoa.drawCharacter();
             for (var rowSource = 0; rowSource < 150; rowSource++) {
                 for (var colSource = 0; colSource < 150; colSource++) {
 

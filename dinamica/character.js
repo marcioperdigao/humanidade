@@ -1,41 +1,69 @@
 /*
-* pos.X and pos.Y used to know where the user camera is. Its negative to subtract from the infoChar.x and inforChar.y, they're the real
-* position in the map, but to print it on canvas, we need to subtract the real position from the camera position.
-*
-* */
+ * pos.X and pos.Y used to know where the user camera is. Its negative to subtract from the config.x and inforChar.y, they're the real
+ * position in the map, but to print it on canvas, we need to subtract the real position from the camera position.
+ *
+ * */
 var imagemCarregada=false;
 var character=function(config){
-    this.name=config.name || "Undefined Name";
-    this.infoChar=config;
-    this.infoChar.x=config.x || 64+widthCanvas/2; //THIS IS THE POSITION
-    this.infoChar.y=config.y || heightCanvas/2;
-    this.pos=config.pos; //POSITION OF THE VIEW GAME, USED TO KNOW WHERE PRINT, WHERE THE CAMERA USER IS
-    this.tamX=config.tamX || 25;
-    this.tamY=config.tamY || 50;
+    this.canvas=document.getElementById("game");
+    this.context=this.canvas.getContext("2d");
+    this.pos=config.pos;
+    this.mobNumber=config.mobNumber;
+    this.nextHit=100;
+    this.config={};
+    var _this=this;
+    var xmlhttp = new XMLHttpRequest();
+    var url = "img/character/perdigao.json";
 
-    this.canvas=config.charCanvas;
+    xmlhttp.onreadystatechange = function () {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            _this.myFunction(xmlhttp.responseText);
+
+        }
+    };
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+
+    this.myFunction=function(response) {
+
+        this.config = JSON.parse(response);
+
+        this.changeView();
+    };
+
+    //POSITION OF THE VIEW GAME, USED TO KNOW WHERE PRINT, WHERE THE CAMERA USER IS
+    this.alive=true;
+
+
     this.units={
         x:0,
         y:0,
         moves:0,
-        frameY:0,
-        placeFree:true
+        follow:false,
+        side:0,
+        left:false,
+        stop:false,
+        imageFrame:0,
+        distanciaX:null,
+        distanciaY:null,
+        distanciaDiagonal:null//distância do mob para o character se for menor que um certo valor entao o mob ataca
     };
+
+
+
     this.moves=0;
     this.mouse={
         x:0,
         y:0
     };
 
-    //this.canvas=config.charCanvas;
-    this.context=config.charContext;
-    this.hulkFrame=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
     this.timePerFrame=0;
-    this.frameIndex=0;
-    this.hulk=new Image();
-    this.hulk.src="img/character/hulk.png";
-    this.hulk.addEventListener('load',function(){
+
+    this.img=new Image();
+    this.img.src="img/character/clotharmor.png";
+    this.img.addEventListener('load',function(){
         imagemCarregada=true;
+
     },false);
 
     this.matrix=[{},{},{},{}];
@@ -43,7 +71,7 @@ var character=function(config){
     this.matrix[1].layer=[];
     this.matrix[2].layer=[];
     this.matrix[3].layer=[];
-    //this.matrix[1].layer=[];
+
     //first layer
     for (var i = 0,k=-1; i < TileMaps["modelo1"].layers[0].data.length; i++) {
         if (i % 150 === 0) {
@@ -53,6 +81,7 @@ var character=function(config){
         this.matrix[0].layer[k].push(TileMaps["modelo1"].layers[0].data[i]);
 
     }
+
     //4 layer
     for (i = 0,k=-1; i < TileMaps["modelo1"].layers[3].data.length; i++) {
         if (i % 150 === 0) {
@@ -64,8 +93,28 @@ var character=function(config){
     }
 
 
+    this.drawingMobs=new drawTheMob(this); //create the estancia to draw the mob
+    this.followHim=new followTarget(this); //create the estancia to follow the target
 
 };
+
+character.prototype.attacking=function(target){
+    this.target=target;
+    //follow the player or mob, i don't know
+    this.followHim.startFollow(this.target[0]);
+
+    //attack the mob or player i don't know
+    if(this.units.stop==true){
+        if(this.nextHit==100){
+            atkTarget(this.target,this); //create the stanza to atk the target
+            this.nextHit=0;
+        }
+        this.nextHit+=this.config.atkSpeed;
+    }
+
+
+};
+
 character.prototype.walk=function(){
     var pos=this.pos;
 
@@ -107,13 +156,12 @@ character.prototype.walk=function(){
 };
 
 character.prototype.changeView=function(){
-    var charReal=this.infoChar;
+    var config=this.config;
     var canvas=this.canvas;
     var mouse=this.mouse;
     var units=this.units;
     var pos=this.pos;
-    var infoChar=this.infoChar;
-    var matrix=this.matrix;
+
 
 
     function onMouseMove(e){
@@ -122,102 +170,93 @@ character.prototype.changeView=function(){
 
     }
 
-    function onMouseClick(e){
+    this.onMouseClick=function(e){
 
 
-            charReal.placeFree=true;
-            var distanciaX=mouse.x-pos.X-charReal.x-25;
+        config.placeFree=true;
+        var distanciaX=mouse.x-pos.X-config.x-25;
 
-            var distanciaY=mouse.y-pos.Y-charReal.y-40;
+        var distanciaY=mouse.y-pos.Y-config.y-40;
 
-            var distanciaDiagonal=Math.sqrt((distanciaX)*(distanciaX)+(distanciaY)*(distanciaY));
-            units.moves=distanciaDiagonal/charReal.speed;
-            var tgValue=distanciaY/distanciaDiagonal;
-            var deegres=Math.asin(tgValue);
-            /*var angle=Math.asin(tgValue)*180/Math.PI;*/
+        var distanciaDiagonal=Math.sqrt((distanciaX)*(distanciaX)+(distanciaY)*(distanciaY));
+        units.moves=distanciaDiagonal/config.moveSpeed;
+        var tgValue=distanciaY/distanciaDiagonal;
+        var deegres=Math.asin(tgValue);
+        /*var angle=Math.asin(tgValue)*180/Math.PI;*/
 
-            units.x=Math.cos(deegres)*charReal.speed;
-            units.y=Math.sin(deegres)*charReal.speed;
-            if(distanciaX<0){
-                units.x=units.x*-1;
-            }
-            if(distanciaY<0){
-                //units.y=units.x*-1;
-            }
-
-            if(units.y<0){
-                if(units.x>0) {
-                    if(units.x>units.y*-1) units.frameY=8;
-                    else units.frameY=12;
-                }
-                else if(units.y<units.x) units.frameY=12;
-                else units.frameY=4;
-            }
-            else {
-                if(units.x>0){
-                    if(units.x>units.y) units.frameY=8;
-                    else units.frameY=0;
-                }
-                else{
-                    if(units.x<units.y*-1) units.frameY=4;
-                    else units.frameY=0;
-                }
-            }
-
-            /* console.log(" angle "+angle+" tgValue :"+tgValue+" distanciaX :"+distanciaX+" distanciaY :"+distanciaY+" distanciaDiagonal"+distanciaDiagonal+
-             " X "+charReal.x+" Y "+charReal.y+" arctan: "+angle);
-             console.log("xunits: "+units.x+" yunits "+units.y+"moves "+units.moves+" pos.x "+pos.Y);*/
+        units.x=Math.cos(deegres)*config.moveSpeed;
+        units.y=Math.sin(deegres)*config.moveSpeed;
+        if(distanciaX<0){
+            units.x=units.x*-1;
+        }
+        if(distanciaY<0){
+            //units.y=units.x*-1;
         }
 
-    canvas.addEventListener("mousemove",onMouseMove,false);
-    this.mouse=mouse;
-    canvas.addEventListener("click",onMouseClick,false);
+        if(units.y<0){
+            if(units.x>0) {
+                if(units.x>units.y*-1) {
+                    units.side=1;
+                    units.left=false;
+                }
+                else {
+                    units.side=4;
+                    units.left=false;
+                }
+            }
+            else if(units.y<units.x) {
+                units.side=4;
+                units.left=false;
+            }
+            else {
+                units.side=1;
+                units.left=true;
+            }
+        }
+        else {
+            if(units.x>0){
+                if(units.x>units.y) {
+                    units.side=1;
+                    units.left=false;
+                }
+                else {
+                    units.side=7;
+                    units.left=false;
+                }
+            }
+            else{
+                if(units.x<units.y*-1) {
 
+                    units.side = 1;
+                    units.left=true;
+                }
+                else {
+                    units.side=7;
+                    units.left=false;
+                }
+            }
+        }
+
+
+        /* console.log(" angle "+angle+" tgValue :"+tgValue+" distanciaX :"+distanciaX+" distanciaY :"+distanciaY+" distanciaDiagonal"+distanciaDiagonal+
+         " X "+config.x+" Y "+config.y+" arctan: "+angle);
+         console.log("xunits: "+units.x+" yunits "+units.y+"moves "+units.moves+" pos.x "+pos.Y);*/
+
+
+    };
+
+    canvas.addEventListener("mousemove",onMouseMove,false);
+    this.canvas.addEventListener("click",this.onMouseClick,false);
 };
 
 
-character.prototype.drawCharacter=function(pessoa){
-
-    var name=this.name;
-    var context=this.context;
-
-
+character.prototype.drawCharacter=function(){
     if(this.units.moves>0){ //USED TO CALCULATION how much more movies need to the character arrive, if its not there yet the go more one step
-        this.infoChar.x+=this.units.x;
-        this.infoChar.y+=this.units.y;
+        this.config.x+=this.units.x;
+        this.config.y+=this.units.y;
         this.units.moves--;
     }
-    //Now i'm calculation the real position of the char and using this to get the tiled Id
-    var tileX=(Math.floor((this.infoChar.x+20)/32));
-    var tileY=(Math.floor((this.infoChar.y+50)/32));
-
-    if(!this.matrix[3].layer[tileY][tileX]==false){
-        this.infoChar.x-=this.units.x;
-        this.infoChar.y-=this.units.y;
-        this.units.moves=0;
-    }
-
-        context.beginPath();
-        context.font="10px Sans-Serif";
-        context.fillStyle="black";
-        context.linewidth=2;
-        context.fillText(name,this.infoChar.x+this.pos.X+10,this.infoChar.y+this.pos.Y);
-        context.closePath();
-
-        var sourceX=Math.floor(this.hulkFrame[this.frameIndex]%4)*40;
-        var sourceY=Math.floor(this.hulkFrame[this.units.frameY]/4)*56;
-
-        context.drawImage(this.hulk,sourceX,sourceY,40,56,this.infoChar.x+this.pos.X,this.infoChar.y+this.pos.Y,40,56);
-        if(this.units.moves>=0){
-            if(this.timePerFrame==10){
-                this.timePerFrame=0;
-                this.frameIndex++;
-                if(this.frameIndex==this.hulkFrame.length){
-                    this.frameIndex=0;
-                }
-            }
-            this.timePerFrame++;
-        }
+    this.drawingMobs.drawing(this);
 
 };
 

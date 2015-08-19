@@ -1,0 +1,59 @@
+{
+	"id": "Perdigao",
+  	"level":1,
+  	"exp":0,
+  	"expNextlvl":100,
+  	"x":575,
+	"y":300,
+	"width": 64,
+	"height": 64,
+	"life": 1000000,
+  	"lifePerlvl":30,
+  	"mana":35,
+  	"manaPerlvl":25,
+  	"atk": 37,
+	"def": 25,
+	"atkSpeed": 5,
+	"moveSpeed": 10,
+	"src": "img/character/clotharmor.png",
+	"animations": [
+		 {
+			"length": 4,
+			"row": 0
+		},
+		 {
+			"length": 3,
+			"row": 1
+		},
+		 {
+			"length": 1,
+			"row": 2
+		},
+		 {
+			"length": 4,
+			"row": 3
+		},
+		 {
+			"length": 3,
+			"row": 4
+		},
+		 {
+			"length": 1,
+			"row": 5
+		},
+		 {
+			"length": 4,
+			"row": 6
+		},
+		 {
+			"length": 3,
+			"row": 7
+		},
+		 {
+			"length": 1,
+			"row": 8
+		}
+	],
+	"offset_x": -5,
+	"offset_y": -9
+}
