@@ -27,7 +27,7 @@ var character=function(config){
     this.myFunction=function(response) {
 
         this.config = JSON.parse(response);
-
+        this.config.lifeFull=this.config.life;
         this.changeView();
     };
 

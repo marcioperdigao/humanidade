@@ -10,13 +10,14 @@ var imagens=function(){
     },false);
 };
 
-var xmlhttp = new XMLHttpRequest();
-var url = "img/mobs/goblin/goblinsont.json";
+
 
 
 
 window.addEventListener("load",loadingGame,false);
 function loadingGame(){
+    this.xmlhttp = new XMLHttpRequest();
+    this.url = "img/mobs/goblin/goblinsont.json";
     var _this=this;
     this.xmlhttp.onreadystatechange = function () {
         if (_this.xmlhttp.readyState == 4 && _this.xmlhttp.status == 200) {
@@ -109,7 +110,7 @@ function startGame(config){
     var workHouse=new creation(canvas,pessoa[0]);
 
 
-    setInterval(draw,1000/60);
+    setInterval(draw,1000/100);
 
     function draw() {
 
@@ -150,6 +151,8 @@ function startGame(config){
 
         }
         function mobsFunctions(){
+
+            //If the respaw of Goblin is less then 10, then create a new stance of  aiMobs and push it to the vector mobs
             respawGoblin--;
 
             if(respawGoblin<0 && mobs.length<10){
@@ -165,6 +168,8 @@ function startGame(config){
                 mobs.push(tempMob);
 
             }
+
+
             for(var i=0;i<mobs.length<10;i++) {
                 mobs[i].drawMob();
                 mobs[i].moving();

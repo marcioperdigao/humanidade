@@ -28,7 +28,7 @@ drawTheMob.prototype.drawing=function(){
     this._this.context.fillStyle="black";
     this._this.context.linewidth=4;
 
-    this._this.context.fillText(this._this.config.id,this._this.config.x+this._this.pos.X,this._this.config.y+this._this.pos.Y);
+    this._this.context.fillText(this._this.config.id,this._this.config.x+this._this.pos.X,this._this.config.y+this._this.pos.Y-5);
     this._this.context.closePath();
 
     /*console.log(this._this.config.animations[this._this.units.side].row);*/
@@ -40,6 +40,12 @@ drawTheMob.prototype.drawing=function(){
 
     if(this._this.units.left){
         this._this.context.save();
+        //Drawing the bar orange below the bar life
+        this._this.context.fillStyle="orange";
+        this._this.context.fillRect(this._this.config.x + this._this.pos.X+4,this._this.config.y + this._this.pos.Y-5,50,8);
+        this._this.context.fillStyle="green";
+        var lifeBarXPorcent=(this._this.config.life*50)/this._this.config.lifeFull;
+        this._this.context.fillRect(this._this.config.x + this._this.pos.X+4,this._this.config.y + this._this.pos.Y-5,lifeBarXPorcent,8);
 
         this._this.context.scale(-1, 1);
         this._this.context.drawImage(this._this.img, sourceX, sourceY, this._this.config.width, this._this.config.height, -(this._this.config.x + this._this.pos.X)-this._this.config.width, this._this.config.y + this._this.pos.Y,
@@ -59,6 +65,14 @@ drawTheMob.prototype.drawing=function(){
 
     else {
 
+        //Drawing the bar orange below the bar life
+        this._this.context.fillStyle="orange";
+        this._this.context.fillRect(this._this.config.x + this._this.pos.X+4,this._this.config.y + this._this.pos.Y-5,50,8);
+        this._this.context.fillStyle="green";
+        var lifeBarXPorcent=(this._this.config.life*50)/this._this.config.lifeFull;
+        this._this.context.fillRect(this._this.config.x + this._this.pos.X+4,this._this.config.y + this._this.pos.Y-5,lifeBarXPorcent,8);
+
+        //Drawing the mob or char
         this._this.context.drawImage(this._this.img, sourceX, sourceY, this._this.config.width, this._this.config.height, this._this.config.x + this._this.pos.X, this._this.config.y + this._this.pos.Y, this._this.config.width, this._this.config.height);
 
         this._this.timePerFrame++;

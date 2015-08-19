@@ -1,20 +1,21 @@
 
 var aiMobs=function(config) {
 
-    this.config = JSON.parse(config.configMob);
+    this.config = JSON.parse(config.configMob);//give the goblin JSON to your variable;
 
     this.pos=config.pos; //POSITION OF THE VIEW GAME, USED TO KNOW WHERE PRINT, WHERE THE CAMERA USER IS
     this.mobNumber=config.mobNumber;
     /* this.target=config.target; //info of all players position*/
     this.nextHit=100;
 
-    //give the goblin JSON to your variavels;
+
 
     console.log(this.config.id);
 
 
     this.config.life+=30*this.config.level;
-    this.config.x+=Math.random()*config.mobNumber.number*100;
+    this.config.lifeFull=this.config.life;
+    this.config.x+=Math.random()*config.mobNumber.number*200;
     this.config.y+=Math.random()*config.mobNumber.number*100;
 
     this.drawingMobs=new drawTheMob(this); //create the estancia to draw the mob

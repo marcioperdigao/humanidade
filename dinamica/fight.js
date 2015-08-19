@@ -4,7 +4,7 @@ function atkTarget(target,fighter){
 
     this.damage=fighter.config.atk-target[0].config.def;
     target[0].config.life-=this.damage;
-    //console.log(fighter.config.id+" DEALS "+this.damage+" OF DAMAGE ON "+target.config.id);
+    console.log(fighter.config.id+" DEALS "+this.damage+" OF DAMAGE ON "+target[0].config.id+" life now is"+target[0].config.life);
     //console.log(fighter.config.level);
     if(target[0].config.life<=0) {
         fighter.units.stop=false;
