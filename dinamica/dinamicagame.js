@@ -10,12 +10,36 @@ var imagens=function(){
     },false);
 };
 
+var xmlhttp = new XMLHttpRequest();
+var url = "img/mobs/goblin/goblinsont.json";
 
 
 
-window.addEventListener("load",startGame,false);
+window.addEventListener("load",loadingGame,false);
+function loadingGame(){
+    var _this=this;
+    this.xmlhttp.onreadystatechange = function () {
+        if (_this.xmlhttp.readyState == 4 && _this.xmlhttp.status == 200) {
+            _this.myFunction(_this.xmlhttp.responseText);
 
-function startGame(){
+        }
+    };
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+
+    this.myFunction=function(response) {
+
+        this.config = response;
+
+    };
+
+    setTimeout(function(){
+        startGame(_this.config)
+    },1000);
+}
+
+function startGame(config){
+    console.log(config);
     var canvas=document.getElementById("game");
     var context=canvas.getContext("2d");
     var img=new imagens();
@@ -76,7 +100,9 @@ function startGame(){
         mobs[i]=new aiMobs({
             pos:pos,
             mobNumber:mobNumber,
-            img:img
+            img:img,
+            configMob:config
+
         });
     }
     var respawGoblin=300;
@@ -132,7 +158,8 @@ function startGame(){
                 var tempMob=new aiMobs({
                     pos:pos,
                     mobNumber:mobNumber,
-                    img:img
+                    img:img,
+                    configMob:config
                 });
                 console.log("Respaw of a Goblin");
                 mobs.push(tempMob);

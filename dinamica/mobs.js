@@ -1,35 +1,21 @@
 
 var aiMobs=function(config) {
 
-    this.config={};
+    this.config = JSON.parse(config.configMob);
+
     this.pos=config.pos; //POSITION OF THE VIEW GAME, USED TO KNOW WHERE PRINT, WHERE THE CAMERA USER IS
     this.mobNumber=config.mobNumber;
     /* this.target=config.target; //info of all players position*/
     this.nextHit=100;
-    var _this=this;
-    var xmlhttp = new XMLHttpRequest();
-    var url = "img/mobs/goblin/goblinsont.json";
 
-    xmlhttp.onreadystatechange = function () {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            _this.myFunction(xmlhttp.responseText);
+    //give the goblin JSON to your variavels;
 
-        }
-    };
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-
-    this.myFunction=function(response) {
-
-        this.config = JSON.parse(response);
-        this.config.life+=30*this.config.level;
-        this.config.x+=Math.random()*config.mobNumber.number*100;
-        this.config.y+=Math.random()*config.mobNumber.number*100;
+    console.log(this.config.id);
 
 
-
-    };
-    console.log(config.life);
+    this.config.life+=30*this.config.level;
+    this.config.x+=Math.random()*config.mobNumber.number*100;
+    this.config.y+=Math.random()*config.mobNumber.number*100;
 
     this.drawingMobs=new drawTheMob(this); //create the estancia to draw the mob
     this.followHim=new followTarget(this); //create the estancia to follow the target
